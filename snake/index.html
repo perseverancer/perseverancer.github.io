@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <!--<meta name="viewport" content="width=320,initial-scale=1.0">-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <!-- <meta http-equiv="X-UA-Compatible" content="ie=edge">  -->
+    <title>贪吃蛇</title>
+    <link href="css/index.css" rel="stylesheet" />
+    <link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <script src="lib/jquery-3.2.1.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/snake.js" charset="gbk"></script>
+    <script type="text/javascript" src="js/food.js" charset="gbk"></script>
+    <script>
+        window.onload = function () {
+            setCanvasSize();
+
+            setBtnDivSize();
+
+            document.getElementById('btnStart').onclick = function () {
+                start();
+            }
+        }
+
+        window.onresize = function () {
+            setCanvasSize();
+        }
+
+        function setBtnDivSize() {
+            var width = parseInt($('#btnStart').css('width')) +
+                parseInt($('#btnPause').css('width')) +
+                parseInt($('#reStart').css('width'));
+
+            $('.cus-btn-group').css('width', width + 10);
+        }
+
+        function setCanvasSize() {
+            var cav = document.getElementById('mycanvas');
+            var width = parseInt($(cav.parentNode).css('width'));
+            canvasWidth = changeSize(width - 30);
+            canvasHeight = changeSize(parseInt($(cav.parentNode.parentNode).css('height')) - 60);
+
+            $(cav).attr('width', canvasWidth);
+            $(cav).attr('height', canvasHeight);
+
+            //左右内边距各15px
+            $(cav).css('margin-left', (width - canvasWidth - 30) / 2 + "px");
+            $(cav).css('margin-right', (width - canvasWidth - 30) / 2 + "px");
+        }
+
+        function changeSize(size) {
+            while (size % 25 != 0) {
+                size--;
+            }
+            return size;
+        }
+
+        function start() {
+            startTime = new Date();
+
+            var cav = document.getElementById('mycanvas');
+            var canvas = cav.getContext('2d');
+
+            snake = new Snake(canvasWidth, canvasHeight);
+            snake.draw(canvas);
+
+            food = new Food(snake);
+            food.draw(canvas, snake.snakeArr);
+
+            interval = setInterval(function () {
+                clearCanvas();
+                food.draw(canvas, snake.snakeArr);
+                snake.draw(canvas);
+            }, snake.speed, snake, canvas);
+        }
+
+        function setSpeed() {
+            var cav = document.getElementById('mycanvas');
+            var canvas = cav.getContext('2d');
+
+            clearInterval(interval);
+            interval = setInterval(function () {
+                clearCanvas();
+                food.draw(canvas, snake.snakeArr);
+                snake.draw(canvas);
+            }, snake.speed, snake, canvas)
+        }
+
+        document.onkeydown = function (e) {
+            e = window.event || e;
+            switch (e.keyCode) {
+                case 37: //左键
+                    snake.direction = "left";
+                    break;
+                case 38: //向上键
+                    snake.direction = "up";
+                    break;
+                case 39: //右键
+                    snake.direction = "right";
+                    break;
+                case 40: //向下键
+                    snake.direction = "down";
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        function clearCanvas() {
+            var cav = document.getElementById('mycanvas');
+            cav.height = cav.height;
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="center-block cus-btn-group">
+            <button id="btnStart">开始</button>
+            <button id="btnPause">暂停</button>
+            <button id="reStart">重新开始</button>
+        </div>
+        <canvas id='mycanvas' class="snakeCanvas"></canvas>
+    </div>
+</body>
+
+</html>

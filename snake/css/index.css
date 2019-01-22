@@ -1,0 +1,13 @@
+html,body{
+    height: 100% !important;
+}
+.snakeCanvas {
+    background: lightgray;
+    display: block;
+    margin-top: 10px;
+}
+
+.cus-btn-group {
+    /* width: 170px; */
+    padding-top: 10px;
+}
